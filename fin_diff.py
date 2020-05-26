@@ -127,6 +127,7 @@ class FiniteDifferenceModel:
         self.T = np.array(transition_matrix)
 
         self.data = self.simulate(t_omega)
+        self.index = self.data.index
 
     def simulate(self, t_omega=500):
         """ simulate api levels in the compartments for t minutes """
@@ -157,35 +158,33 @@ class FiniteDifferenceModel:
 # simulations in an one compartment model
 class OneCompartment(FiniteDifferenceModel):
 
-    def __init__(self, dose_a, tm, t_omega):
+    def __init__(self, dose_a, invasion, elimination, t_omega):
         
-        A = Compartment("Arzneiform", dose_a)
+        A = Compartment("Arzneiform", Bolus(dose_a))
         C = Compartment("Plasma")
         E = Compartment("Elimination")
+
+        N = NullTransition()
+        tm = [[N, invasion, N], [N, N, elimination], [N, N, N]]
 
         super().__init__((A, C, E), tm, t_omega)
         
     
 class Bateman_1(OneCompartment):
 
-    def __init__(self, dose_a=Bolus(100), ki=0.04, ke=0.02, d = 100, t_omega=500):
+    def __init__(self, dose_a=100, ki=0.04, ke=0.02, t_omega=500):
 
         invasion = Order_1(ki)
         elimination = Order_1(ke)
-        N = NullTransition()
-        tm = [[N, invasion, N], [N, N, elimination], [N, N, N]]
         
-        super().__init__(dose_a, tm, t_omega)
+        super().__init__(dose_a, invasion, elimination, t_omega)
 
 class Bateman_0(OneCompartment):
 
-    def __init__(self, dose_a=Bolus(100), ki=1, ke=0.02, d = 100, t_omega=500):
+    def __init__(self, dose_a=100, ki=1, ke=0.02, t_omega=500):
 
         invasion = Order_0(ki)
         elimination = Order_1(ke)
-        N = NullTransition()
-        tm = [[N, invasion, N], [N, N, elimination], [N, N, N]]
-        
-        super().__init__(dose_a, tm, t_omega)
 
+        super().__init__(dose_a, invasion, elimination, t_omega)
 

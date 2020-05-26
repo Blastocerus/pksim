@@ -1,3 +1,5 @@
+[![Run on Repl.it](https://repl.it/badge/github/Blastocerus/pksim)](https://repl.it/github/Blastocerus/pksim)
+
 # pksim
 
 [Finite
@@ -31,7 +33,7 @@ and waste compartments.
 Compartments are modeled by 
 - *name*,
 - *volume of distribution*,
-- "dosing scheme*
+- *dosing scheme*
 
 ## dosing schemes
 
